@@ -9,6 +9,6 @@ base = "/home/limited_user/Data/"
 [default.logs]
 base = "/tmp/pace_runner_logs"
 enable_stream = true
-file = "@jinja {{this.logs__base}}/{{this.output__job_name}}/{{this._get_start_ts(this.tz).strftime('%Y-%m-%d_%H-%M-%S')}}.log"
+file = "@jinja {{this.logs.base}}/{{this._get_start_ts(this.tz).strftime('%Y-%m-%d_%H-%M-%S')}}.log"
 level = "INFO"
 name = 'dynalog'
