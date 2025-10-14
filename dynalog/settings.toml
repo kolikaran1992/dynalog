@@ -1,14 +1,13 @@
 [default]
-now_iso = "@jinja {{this._get_now(this.tz)}}"
+now_iso = "@jinja {{this._get_now_iso(this.tz)}}"
 start_ts = "@jinja {{this._get_start_ts(this.tz)}}"
 tz = "Asia/Kolkata"
 
 [default.output]
-base = "/home/limited_user/Data/"
+base = "/tmp/output"
 
 [default.logs]
-base = "/tmp/pace_runner_logs"
+base = "/tmp/logs"
 enable_stream = true
 file = "@jinja {{this.logs.base}}/{{this._get_start_ts(this.tz).strftime('%Y-%m-%d_%H-%M-%S')}}.log"
 level = "INFO"
-name = 'dynalog'

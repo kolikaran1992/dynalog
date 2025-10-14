@@ -12,8 +12,12 @@ def _get_start_ts(tz: str) -> datetime:
     return _NOW.astimezone(pytz.timezone(tz))
 
 
-def _get_now(tz: str) -> str:
+def _get_now_iso(tz: str) -> str:
     return datetime.now().astimezone(pytz.timezone(tz)).isoformat()
+
+
+def _get_now_ts(tz: str) -> str:
+    return datetime.now().astimezone(pytz.timezone(tz))
 
 
 ###################
@@ -28,7 +32,8 @@ config = Dynaconf(
     # to enable merging of user defined and base settings
     load_dotenv=True,
     # jinja variables
-    _get_now=_get_now,
+    _get_now_ts=_get_now_ts,
+    _get_now_iso=_get_now_iso,
     _get_start_ts=_get_start_ts,
     now=_NOW,
     partition_date=_NOW.strftime("%Y/%m/%d"),
