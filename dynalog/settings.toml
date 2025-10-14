@@ -8,6 +8,8 @@ base = "/tmp/output"
 
 [default.logs]
 base = "/tmp/logs"
+enable_file = false
 enable_stream = true
 file = "@jinja {{this.logs.base}}/{{this._get_start_ts(this.tz).strftime('%Y-%m-%d_%H-%M-%S')}}.log"
 level = "INFO"
+name = 'default'

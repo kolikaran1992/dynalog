@@ -22,28 +22,29 @@ class DefaultFormatter(logging.Formatter):
 
 
 def get_logger(init: bool = True) -> logging.Logger:
-    name = config.get("logs__name", "NO_NAME")
+    name = config.logs.name
     if not init:
         return logging.getLogger(name)
 
     logger = logging.getLogger(name)
-    log_file_path = config.get("logs__file")
+    log_file_path = config.logs.file
     log_dir = Path(log_file_path).parent
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    logger.setLevel(getattr(logging, config.get("logs__level", "INFO").upper()))
+    logger.setLevel(getattr(logging, config.logs.level.upper()))
 
     # Include log_file_path in the format string
     fmt = "[%(asctime)s] %(levelname)s [%(full_path)s]: %(message)s"
     formatter = DefaultFormatter(fmt=fmt)
 
     # File handler
-    file_handler = logging.FileHandler(log_file_path)
-    file_handler.setLevel(logger.level)
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
+    if config.logs.enable_file:
+        file_handler = logging.FileHandler(log_file_path)
+        file_handler.setLevel(logger.level)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
 
-    if config.get("logs__enable_stream", False):
+    if config.logs.enable_stream:
         stream_handler = logging.StreamHandler()
         stream_handler.setLevel(logger.level)
         stream_handler.setFormatter(formatter)

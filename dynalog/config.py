@@ -23,9 +23,11 @@ def _get_now_ts(tz: str) -> str:
 ###################
 # Create Settings #
 ###################
+secrets_dir = os.environ.get("SECRETS_DIRECTORY") or ""
 config = Dynaconf(
     preload=[_BASE_DIR.joinpath("dynalog", "settings.toml").as_posix()],
     settings_files=[],
+    secrets=[] if not secrets_dir else list(Path(secrets_dir).glob("*.toml")),
     # to enable overriding of single variables at runtime
     environments=True,
     envvar_prefix="EXP_BASE",
