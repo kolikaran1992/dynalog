@@ -1,6 +1,6 @@
 from dynaconf import Dynaconf
 from datetime import datetime
-import os, sys, pytz
+import os, pytz, requests
 from pathlib import Path
 
 
@@ -18,6 +18,38 @@ def _get_now_iso(tz: str) -> str:
 
 def _get_now_ts(tz: str) -> str:
     return datetime.now().astimezone(pytz.timezone(tz))
+
+
+###########################
+# Download Jars for MinIO #
+###########################
+
+# ---- JAR dependencies ----
+JARS = {
+    "hadoop-aws-3.3.4.jar": "https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.4/hadoop-aws-3.3.4.jar",
+    "aws-java-sdk-bundle-1.12.262.jar": "https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.12.262/aws-java-sdk-bundle-1.12.262.jar",
+    "jaxb-api-2.3.1.jar": "https://repo1.maven.org/maven2/javax/xml/bind/jaxb-api/2.3.1/jaxb-api-2.3.1.jar",
+    "jaxb-core-2.3.0.jar": "https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-core/2.3.0/jaxb-core-2.3.0.jar",
+    "jaxb-impl-2.3.0.jar": "https://repo1.maven.org/maven2/com/sun/xml/bind/jaxb-impl/2.3.0/jaxb-impl-2.3.0.jar",
+}
+
+# ---- Target directory for jars ----
+jar_dir = Path.home().joinpath(".local/lib/minio-jars").resolve()
+jar_dir.mkdir(parents=True, exist_ok=True)
+
+# ---- Download jars if not already present ----
+for name, url in JARS.items():
+    target_file = jar_dir / name
+    if not target_file.exists():
+        print(
+            f"one time download jar dependency for minio at: '{target_file.as_posix()}'"
+        )
+        # print(f"Downloading {name} ...")
+        response = requests.get(url, stream=True)
+        response.raise_for_status()
+        with open(target_file, "wb") as f:
+            for chunk in response.iter_content(chunk_size=8192):
+                f.write(chunk)
 
 
 ###################
