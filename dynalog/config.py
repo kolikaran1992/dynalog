@@ -72,5 +72,6 @@ config = Dynaconf(
     now=_NOW,
     partition_date=_NOW.strftime("%Y/%m/%d"),
     root_dir=_BASE_DIR.as_posix(),
+    home_dir=Path.home().as_posix(),
     merge_enabled=True,
 )
