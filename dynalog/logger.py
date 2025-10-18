@@ -21,12 +21,14 @@ class DefaultFormatter(logging.Formatter):
         return super().format(record)
 
 
-def get_logger(init: bool = True) -> logging.Logger:
+def get_logger() -> logging.Logger:
     name = config.logs.name
-    if not init:
-        return logging.getLogger(name)
-
     logger = logging.getLogger(name)
+
+    if getattr(logger, "_initialized", False):
+        # Logger already configured
+        return logger
+
     log_file_path = config.logs.file
     log_dir = Path(log_file_path).parent
     log_dir.mkdir(parents=True, exist_ok=True)
@@ -49,5 +51,7 @@ def get_logger(init: bool = True) -> logging.Logger:
         stream_handler.setLevel(logger.level)
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
+
+    logger._initialized = True
 
     return logger
